@@ -1,3 +1,4 @@
+import logging
 import re
 from collections import defaultdict
 from typing import Any
@@ -477,11 +478,13 @@ async def show_rules(message: Message):
     )
 
 
-# @form_router.error()
-# async def error_handler(event: ErrorEvent):
-#     logger.critical("Critical error caused by %s", event.exception, exc_info=True)
-#     # do something with error
-#     ...
+@form_router.error()
+async def error_handler(event: ErrorEvent):
+    logging.getLogger('Errors').critical("Critical error caused by %s", event.exception, exc_info=True)
+    # do something with error
+    message = event.update.message or event.update.callback_query.message
+    if message:
+        await message.answer('Произошла непредвиденая ошибка')
 
 
 dp.include_router(form_router)

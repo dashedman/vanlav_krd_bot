@@ -38,30 +38,47 @@ def apply_worker_to_template(
         worker: tuple[tuple[Any, str | None], ...],
         column_map: dict[str, int],
 ):
+    compiled_lines = []
+    for line in template.split('\n'):
+        try:
+            compiled_line = _apply_worker_to_template_line(line, worker, column_map)
+        except EmptyValueInBlockError:
+            continue
+        compiled_lines.append(compiled_line)
+    return '\n'.join(compiled_lines)
+
+
+def _apply_worker_to_template_line(
+        template_line: str,
+        worker: tuple[tuple[Any, str | None], ...],
+        column_map: dict[str, int],
+):
     def optional_blocks_dfs(curr_idx: int = 0):
         copy_from = curr_idx
         result_string = ''
-        while curr_idx < len(template) - 1:
-            pair = template[curr_idx:curr_idx + 2]
-            if pair == '{?':
-                result_string += template[copy_from:curr_idx]
+        while curr_idx < len(template_line):
+            symbol = template_line[curr_idx]
+            if symbol == '(':
+                result_string += template_line[copy_from:curr_idx]
 
-                result, temp_end = optional_blocks_dfs(curr_idx + 2)
+                result, temp_end = optional_blocks_dfs(curr_idx + 1)
                 result_string += result
 
-                curr_idx = copy_from = temp_end
+                curr_idx = copy_from = temp_end + 1
                 continue
-            elif pair == '?}':
-                result_string += template[copy_from:curr_idx]
-                block_end_idx = curr_idx + 2
+            elif symbol == ')':
+                block_end_idx = curr_idx
+                result_string += template_line[copy_from:block_end_idx]
                 # process block
                 try:
                     compiled_result_string: str = compile_values(result_string)
                 except EmptyValueInBlockError:
                     return '', block_end_idx
                 else:
-                    return compiled_result_string.strip(' '), block_end_idx
+                    wrapped_to_braces = '(' + compiled_result_string.strip(' ') + ')'
+                    return wrapped_to_braces, block_end_idx
             curr_idx += 1
+        result_string += template_line[copy_from:curr_idx]
         return compile_values(result_string).strip()
 
     def compile_values(string_to_apply_values: str):
