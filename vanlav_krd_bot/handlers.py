@@ -5,7 +5,7 @@ from typing import Any
 
 from aiogram import Dispatcher, Router, F, Bot
 from aiogram.enums import ChatAction
-from aiogram.filters import CommandStart, Command, ExceptionTypeFilter
+from aiogram.filters import CommandStart, Command
 from aiogram.fsm.context import FSMContext
 from aiogram.types import Message, ReplyKeyboardRemove, ReplyKeyboardMarkup, KeyboardButton, InlineKeyboardMarkup, \
     InlineKeyboardButton, CallbackQuery, ErrorEvent
@@ -64,7 +64,7 @@ SUPPORTED_EXTENSIONS_AS_LIST = as_list(*SUPPORTED_EXTENSIONS_AS_CODE)
 @form_router.message(CommandStart(), admin_filter)
 async def start_admin(message: Message):
     await message.answer(
-        'Здравствуйте',
+        'Здравствуйте администратор. (Прислал клавиатуру)',
         reply_markup=start_keyboard,
     )
 

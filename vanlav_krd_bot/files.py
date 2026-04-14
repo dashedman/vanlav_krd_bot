@@ -14,6 +14,12 @@ users_registry_file_path = Path('users_registry.json')
 current_xlsx: Workbook | None = None
 
 
+ALLOWED_OPERATORS = {
+    '>', '<', '>=', "<=", '==', '!=',
+    '+', '-', '*', '/', '%',
+}
+
+
 class EmptyValueInBlockError(Exception):
     pass
 
@@ -114,7 +120,7 @@ def _apply_worker_to_template_line(
 
                     expression += orjson.dumps(cell_value).decode()
                     continue
-                elif term in ('>', '<', '>=', "<=", '==', '!='):
+                elif term in ALLOWED_OPERATORS:
                     # check operands
                     expression += f' {term} '
                 elif re.fullmatch(r'[\w"\']+', term):
