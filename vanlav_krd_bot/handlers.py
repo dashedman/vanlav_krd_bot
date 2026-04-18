@@ -184,7 +184,7 @@ async def read_sheet(sheet_name: str, state: FSMContext, message: Message):
         re.sub(r'\s+', ' ', cell.value): idx
         for idx, cell in enumerate(first_row)
     }
-    column_name_to_index['Группа'] = len(column_name_to_index)
+    column_name_to_index['Точка'] = len(column_name_to_index)
     columns_from_table = set(column_name_to_index)
 
     template_table_diff = columns_from_template - columns_from_table
@@ -249,7 +249,7 @@ async def read_sheet(sheet_name: str, state: FSMContext, message: Message):
             await message.answer(
                 **as_marked_section(
                     as_list(
-                        Bold(f'Группа: {group_name}'),
+                        Bold(f'Точка: {group_name}'),
                         'Следующие сотрудники не зарегистрированны в боте.',
                         Text('Им следует написать боту ', Code('/start'), ' и ввести имя и фамилию как это указанно в таблице.'),
                     ),
@@ -302,7 +302,7 @@ async def prepare_reports(
                     **as_list(
                         Bold("Ошибка в процессе формирования отчетов!"),
                         Text(*e.args),
-                        Text('Группа: ', Bold(group)),
+                        Text('Точка: ', Bold(group)),
                         Text('Сотрудник: ', Bold(worker_name)),
                     ).as_kwargs()
                 )
@@ -335,7 +335,7 @@ async def broadcast(query: CallbackQuery, state: FSMContext, bot: Bot):
     await query.message.edit_reply_markup(reply_markup=empty_keyboard)
     reports = data['reports']
     for group, workers in reports.items():
-        await query.message.answer(f'Начата рассылка для группы {group}')
+        await query.message.answer(f'Начата рассылка для точки {group}')
         for w_name, w_tg_id, w_report in workers:
             if w_tg_id is None:
                 await query.message.answer(f'Пропускаю {w_name}')
@@ -467,13 +467,16 @@ async def show_rules(message: Message):
     await message.answer(
         **as_list(
             Text('Ожидается файл разрешения ', SUPPORTED_EXTENSIONS_AS_LINE),
-            'Первая строка - заголовки столбцов',
-            'Вторая строка - итого',
-            'С третьей группы:',
-            ' - первая строка группы - её заголовок',
-            ' - последующие строки группы - её сотрудники',
-            ' - последняя строка группы - пустая, важный маркер о конце группы и начале следующей',
-            'Чтение заканчивается либо в конце таблицы либо при встречи записи "Расчет премий по часам" в "B" столбце',
+            Bold('Ожидается что:'),
+            'Первая строка это заголовки столбцов',
+            'Вторая строка - строка с "итого"',
+            '',
+            'С третьей строки начинаются точки:',
+            ' - первая строка точки - её название',
+            ' - вторая и последующие строки точки - её сотрудники',
+            Text(' - последняя строка точки - пустая, ', Bold('важный маркер о конце точки и начале следующей!')),
+            '',
+            'Чтение файла ботом заканчивается либо в конце таблицы либо при встречи записи "Расчет премий по часам" в столбце "B"',
         ).as_kwargs()
     )
 
