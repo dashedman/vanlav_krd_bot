@@ -165,7 +165,7 @@ def _apply_worker_to_template_line(
             _, comment = worker[column_index]
             if comment is None:
                 # empty value
-                raise EmptyValueInBlockError(f'Не найден необходимый коментарий в колонке ', Code(column))
+                raise EmptyValueInBlockError('Не найден необходимый коментарий в колонке ', Code(column))
             string_to_apply_values = string_to_apply_values.replace(external_match, comment)
         return string_to_apply_values
 

@@ -79,7 +79,7 @@ async def start(message: Message, state: FSMContext):
             return
 
     await state.set_state(NameForm.wait_for_name)
-    await message.reply(f'Привет. Я тебя не знаю. Пришли мне пожалуйста свои имя и фамилию')
+    await message.reply('Привет. Я тебя не знаю. Пришли мне пожалуйста свои имя и фамилию')
 
 
 @form_router.message(NameForm.wait_for_name)
