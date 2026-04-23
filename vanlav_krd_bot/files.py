@@ -7,9 +7,9 @@ from anyio import Path
 from openpyxl.reader.excel import load_workbook
 from openpyxl.workbook import Workbook
 
-template_file_path = Path('../data/stored_template.txt')
-report_file_path = Path('../data/current_report.xlsx')
-users_registry_file_path = Path('../data/users_registry.json')
+template_file_path = Path('./data/stored_template.txt')
+report_file_path = Path('./data/current_report.xlsx')
+users_registry_file_path = Path('./data/users_registry.json')
 
 current_xlsx: Workbook | None = None
 
