@@ -1,3 +1,5 @@
+#!/usr/bin/env -S uv run 
+
 import asyncio
 
 import vanlav_krd_bot
