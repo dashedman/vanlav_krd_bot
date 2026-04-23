@@ -9,7 +9,8 @@ from aiogram.filters import CommandStart, Command
 from aiogram.fsm.context import FSMContext
 from aiogram.types import Message, ReplyKeyboardRemove, ReplyKeyboardMarkup, KeyboardButton, InlineKeyboardMarkup, \
     InlineKeyboardButton, CallbackQuery, ErrorEvent
-from aiogram.utils.formatting import as_list, Code, Text, Pre, as_line, as_marked_list, Bold, as_marked_section
+from aiogram.utils.formatting import as_list, Code, Text, Pre, as_line, as_marked_list, Bold, as_marked_section, \
+    Underline
 from aiogram.utils.keyboard import InlineKeyboardBuilder
 from anyio import Path
 
@@ -468,15 +469,22 @@ async def show_rules(message: Message):
         **as_list(
             Text('Ожидается файл разрешения ', SUPPORTED_EXTENSIONS_AS_LINE),
             Bold('Ожидается что:'),
-            'Первая строка это заголовки столбцов',
-            'Вторая строка - строка с "итого"',
+            Text('Первая строка это ', Underline('заголовки столбцов')),
+            Text('Вторая строка - ', Underline('строка с "итого"')),
             '',
             'С третьей строки начинаются точки:',
-            ' - первая строка точки - её название',
-            ' - вторая и последующие строки точки - её сотрудники',
-            Text(' - последняя строка точки - пустая, ', Bold('важный маркер о конце точки и начале следующей!')),
+            Text(' - первая строка точки - ', Underline('её название')),
+            Text(' - вторая и последующие строки точки - ', Underline('её сотрудники')),
+            Text(' - последняя строка точки - ', Underline('пустая'), ' важный маркер о конце точки и начале следующей!'),
             '',
-            'Чтение файла ботом заканчивается либо в конце таблицы либо при встречи записи "Расчет премий по часам" в столбце "B"',
+            Text(
+                'Чтение файла ботом заканчивается либо ',
+                Underline('в конце таблицы'),
+                ' либо при встречи записи ',
+                Underline('Расчет премий по часам'),
+                ' в столбце ',
+                Code('B')
+            ),
         ).as_kwargs()
     )
 
